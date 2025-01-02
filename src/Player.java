@@ -62,7 +62,7 @@ public class Player {
 
 
         String filePath = "output.txt";
-        String content = "";
+        StringBuilder content = new StringBuilder();
 
         dp[0][0] = 0;
         for (int i = 0; i < n; i++) {
@@ -74,16 +74,16 @@ public class Player {
 
                 for (int i1 = 0; i1 < n; i1++) {
                     for (int j1 = 0; j1 < n; j1++) {
-                        content = content + " " + dp[j1][i1];
+                        content.append(" ").append(dp[j1][i1]);
                     }
-                    content = content + "\n";
+                    content.append("\n");
                 }
-                content = content + "\n";
+                content.append("\n");
             }
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writer.write(content);
+            writer.write(content.toString());
             System.out.println("File written successfully.");
         } catch (IOException e) {
             e.printStackTrace();
