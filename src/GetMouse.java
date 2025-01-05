@@ -17,10 +17,12 @@ public class GetMouse implements MouseListener {
     public void mousePressed(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
-        System.out.println(mouseX + " " + mouseY);
+        //System.out.println(mouseX + " " + mouseY);
         if (mouseX >= 330 && mouseX <= 470 && mouseY >= 800 && mouseY <= 825) {
             gp.initGame();
             gp.inGame = true;
+            gp.gold_count = 0;
+            gp.weight_count = 0;
         }
         if (mouseX >= 600 && mouseX <= 650 && mouseY >= 800 && mouseY <= 825) {
             gp.hint_show = !gp.hint_show;

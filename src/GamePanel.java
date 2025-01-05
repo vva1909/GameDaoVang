@@ -8,7 +8,7 @@ public class GamePanel extends JPanel implements ActionListener {
     final int B_WIDTH = 800;
     final int B_HEIGHT = 800;
     final int DOT_SIZE = 100;
-    int gold_count = 0;
+    int gold_count = 0, weight_count = 0;
     int DELAY = 150;
     boolean inGame = false, hint_show = false;
     Timer timer;
@@ -61,7 +61,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
         g.drawImage(back_ground, 0, 0, B_WIDTH, B_HEIGHT, this);
 
-        Font small = new Font("Helvetica", Font.BOLD, 20);
+        Font small = new Font("Helvetica", Font.BOLD, 18);
         FontMetrics metr = getFontMetrics(small);
 
         g.setColor(Color.black);
@@ -69,9 +69,14 @@ public class GamePanel extends JPanel implements ActionListener {
         if (inGame) {
             for (int i = 0; i < player.n; i++) {
                 for (int j = 0; j < player.n; j++) {
+                    g.drawImage(back_ground, i * DOT_SIZE, j * DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
                     if (player.gold[i][j] > 0) {
                         g.drawImage(gold_image, i * DOT_SIZE + 10, j * DOT_SIZE + 10, DOT_SIZE - 15, DOT_SIZE - 15, this);
-                        g.drawString(" " + player.gold[i][j], i * DOT_SIZE + 32, j * DOT_SIZE + 15);
+                        g.setColor(Color.black);
+                        g.drawString(player.weight[i][j]+" kg", i * DOT_SIZE + 28, j * DOT_SIZE + 30);
+                        g.setColor(Color.RED);
+                        g.drawString(player.gold[i][j]+" $", i * DOT_SIZE + 28, j * DOT_SIZE + 55);
+                        g.setColor(Color.black);
                     }
                     if (hint_show && player.sol[i][j] == 1) {
                         g.drawImage(hint_image, i * DOT_SIZE, j * DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
@@ -80,9 +85,9 @@ public class GamePanel extends JPanel implements ActionListener {
             }
             g.drawImage(finish_image, B_WIDTH - DOT_SIZE, B_HEIGHT - DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
             g.drawImage(player_image, player.x, player.y, DOT_SIZE, DOT_SIZE, this);
-            String msg = "Weight: " + gold_count + " Kg";
+            String msg = "Gold: " + gold_count + " $ / " + player.result + " $" ;
             g.drawString(msg, 0, B_HEIGHT + 20);
-            msg = "Time: " + player.step + " min";
+            msg = "Weight: " + weight_count + " / 20 kg";
             g.drawString(msg, 0, B_HEIGHT + 41);
             Toolkit.getDefaultToolkit().sync();
 
