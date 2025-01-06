@@ -1,11 +1,14 @@
+import javax.sound.sampled.Clip;
 import javax.swing.plaf.IconUIResource;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import static java.lang.Math.min;
-import static sun.swing.MenuItemLayoutHelper.max;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 
 public class Player {
     int weight_limit;
@@ -16,7 +19,9 @@ public class Player {
     int[][] weight;
     int[][] dp;
     int result;
-    int[][] sol;
+    int[][] sol, eaten;
+    Clip clip;
+    File sound;
     public Player(GamePanel gp) {
         this.gp = gp;
         x = 0;
@@ -26,7 +31,10 @@ public class Player {
         gold = new int [n][n];
         weight = new int[n][n];
         dp = new int [25*25][25];
+
+        eaten = new int[n][n];
         sol = new int [n][n];
+
         weight_limit = 20;
 
         Random random = new Random();
@@ -38,19 +46,27 @@ public class Player {
                     gold[i][j] = random.nextInt(15) + 5;
                     weight[i][j] = random.nextInt(5) + 1;
                 }
-                sol[i][j] = 0;
+                sol[i][j] = eaten[i][j] = 0;
             }
         }
         gold[0][0] = weight[0][0] = 0;
         gold[n - 1][n - 1] = weight[n - 1][n - 1] = 0;
+
+        sound = new File("coin.wav");
+        try {
+            this.clip = AudioSystem.getClip();
+            this.clip.open(AudioSystem.getAudioInputStream(sound));
+        } catch (Exception e){}
 
         FindSolution();
     }
 
     public void checkCollision() {
         if (x == gp.B_WIDTH - gp.DOT_SIZE && y == gp.B_HEIGHT - gp.DOT_SIZE) {
-            if (gp.weight_count > weight_limit || gp.gold_count != result) {
-                gp.game_result = "Good luck next time!!!";
+            if (gp.weight_count > weight_limit) {
+                gp.game_result = "You lost everything!!!";
+            } else if (gp.gold_count < result) {
+                gp.game_result = "You've got " + gp.gold_count + " / " + result+"$";
             } else {
                 gp.game_result = "Congratulation!!!";
             }
@@ -59,69 +75,69 @@ public class Player {
     }
 
     public void mine_gold(){
+
         int i = x/gp.DOT_SIZE;
         int j = y/gp.DOT_SIZE;
 
-        if (gold[i][j] == 0) return;
+        if (eaten[i][j] == 1 || gold[i][j] == 0) return;
+
+        try {
+            this.clip = AudioSystem.getClip();
+            this.clip.open(AudioSystem.getAudioInputStream(sound));
+        } catch (Exception e){}
+        clip.start();
+
         gp.gold_count += gold[i][j];
         gp.weight_count += weight[i][j];
-
-        gold[i][j] = 0;
-        sol[i][j] = 0;
+        eaten[i][j] = 1;
     }
 
     public void FindSolution() {
-
-        result = 0;
-
-//        String filePath = "output.txt";
-//        StringBuilder content = new StringBuilder();
-        int m = 0;
-        int[] a = new int[n * n];
-        int[] b = new int[n * n];
-        int[] d = new int[n * n];
-
-        for (int i = 0; i < n * n; i++) {
-            for (int j = 0; j <= 20; j++) dp[i][j] = 0;
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (gold[i][j] > 0) {
-                    a[m] = gold[i][j];
-                    b[m] = weight[i][j];
-                    d[m] = i * n + j;
-                    System.out.println(a[m] + " " + b[m]);
-                    m++;
+            int m = 0;
+            int[] a = new int[n * n];
+            int[] b = new int[n * n];
+            int[] d = new int[n * n];
+    
+            for (int i = 0; i < n * n; i++) {
+                for (int j = 0; j <= 20; j++) dp[i][j] = 0;
+            }
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (gold[i][j] > 0) {
+                        a[m] = gold[i][j];
+                        b[m] = weight[i][j];
+                        d[m] = i * n + j;
+                        m++;
+                    }
                 }
             }
-        }
-
-        dp[0][b[0]] = a[0];
-        for (int i = 1; i < m; i++) {
-            for (int j = b[i]; j <= 20; j++) {
-                dp[i][j] = dp[i - 1][j];
-                if (dp[i][j] < dp[i - 1][j - b[i]] + a[i]) {
-                    dp[i][j] = dp[i - 1][j - b[i]] + a[i];
+    
+            dp[0][b[0]] = a[0];
+            for (int i = 1; i < m; i++) {
+                for (int j = b[i]; j <= 20; j++) {
+                    dp[i][j] = dp[i - 1][j];
+                    if (dp[i][j] < dp[i - 1][j - b[i]] + a[i]) {
+                        dp[i][j] = dp[i - 1][j - b[i]] + a[i];
+                    }
                 }
             }
-        }
-
-        int k = 1;
-        for (int j = 0; j <= 20; j++) {
-            if (dp[m - 1][j] > result) {
-                result = dp[m - 1][j];
-                k = j;
+    
+            result = 0;
+            int k = 1;
+            for (int j = 0; j <= 20; j++) {
+                if (dp[m - 1][j] > result) {
+                    result = dp[m - 1][j];
+                    k = j;
+                }
             }
-        }
-
-        for (int i = m - 1; i >= 0; i--) {
-            if ((i == 0 && k > 0) || (k >= b[i] && dp[i][k] == dp[i - 1][k - b[i]] + a[i])) {
-                int i_r = d[i] / n;
-                int j_r = d[i] % n;
-                sol[i_r][j_r] = 1;
-                k -= b[i];
+    
+            for (int i = m - 1; i >= 0; i--) {
+                if ((i == 0 && k > 0) || (k >= b[i] && dp[i][k] == dp[i - 1][k - b[i]] + a[i])) {
+                    int i_r = d[i] / n;
+                    int j_r = d[i] % n;
+                    sol[i_r][j_r] = 1;
+                    k -= b[i];
+                }
             }
-        }
-        System.out.println(result);
     }
 }
