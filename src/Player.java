@@ -101,6 +101,7 @@ public class Player {
             for (int i = 0; i < n * n; i++) {
                 for (int j = 0; j <= 20; j++) dp[i][j] = 0;
             }
+
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (gold[i][j] > 0) {
