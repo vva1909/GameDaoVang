@@ -1,13 +1,9 @@
 import javax.sound.sampled.Clip;
-import javax.swing.plaf.IconUIResource;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Random;
-
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+
+import static java.lang.Math.max;
 
 
 public class Player {
@@ -56,7 +52,7 @@ public class Player {
         try {
             this.clip = AudioSystem.getClip();
             this.clip.open(AudioSystem.getAudioInputStream(sound));
-        } catch (Exception e){}
+        } catch (Exception ignored){}
 
         FindSolution();
     }
@@ -84,7 +80,7 @@ public class Player {
         try {
             this.clip = AudioSystem.getClip();
             this.clip.open(AudioSystem.getAudioInputStream(sound));
-        } catch (Exception e){}
+        } catch (Exception ignored){}
         clip.start();
 
         gp.gold_count += gold[i][j];
@@ -116,10 +112,7 @@ public class Player {
             dp[0][b[0]] = a[0];
             for (int i = 1; i < m; i++) {
                 for (int j = b[i]; j <= 20; j++) {
-                    dp[i][j] = dp[i - 1][j];
-                    if (dp[i][j] < dp[i - 1][j - b[i]] + a[i]) {
-                        dp[i][j] = dp[i - 1][j - b[i]] + a[i];
-                    }
+                    dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - b[i]] + a[i]);
                 }
             }
     
