@@ -26,7 +26,6 @@ public class Player {
         n = gp.B_HEIGHT / gp.DOT_SIZE;
         gold = new int [n][n];
         weight = new int[n][n];
-        dp = new int [25*25][25];
 
         eaten = new int[n][n];
         sol = new int [n][n];
@@ -89,52 +88,53 @@ public class Player {
     }
 
     public void FindSolution() {
-            int m = 0;
-            int[] a = new int[n * n];
-            int[] b = new int[n * n];
-            int[] d = new int[n * n];
-    
-            for (int i = 0; i < n * n; i++) {
-                for (int j = 0; j <= 20; j++) dp[i][j] = 0;
-            }
+        int m = 0;
+        int[] a = new int[n * n];
+        int[] b = new int[n * n];
+        int[] d = new int[n * n];
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (gold[i][j] > 0) {
-                        a[m] = gold[i][j];
-                        b[m] = weight[i][j];
-                        d[m] = i * n + j;
-                        m++;
-                    }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (gold[i][j] > 0) {
+                    a[m] = gold[i][j];
+                    b[m] = weight[i][j];
+                    d[m] = i * n + j;
+                    m++;
                 }
             }
-    
-            dp[0][b[0]] = a[0];
-            for (int i = 1; i < m; i++) {
-                for (int j = 0; j <= 20; j++) {
-                    dp[i][j] = dp[i - 1][j];
-                    if (j >= b[i]) {
-                        dp[i][j] = max(dp[i][j], dp[i - 1][j - b[i]] + a[i]);
-                    }
+        }
+
+        dp = new int[m][weight_limit + 5];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j <= weight_limit; j++) dp[i][j] = 0;
+        }
+
+        dp[0][b[0]] = a[0];
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j <= weight_limit; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (j >= b[i]) {
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j - b[i]] + a[i]);
                 }
             }
-    
-            result = 0;
-            int k = 1;
-            for (int j = 0; j <= 20; j++) {
-                if (dp[m - 1][j] > result) {
-                    result = dp[m - 1][j];
-                    k = j;
-                }
+        }
+
+        result = 0;
+        int k = 1;
+        for (int j = 0; j <= weight_limit; j++) {
+            if (dp[m - 1][j] > result) {
+                result = dp[m - 1][j];
+                k = j;
             }
-    
-            for (int i = m - 1; i >= 0; i--) {
-                if ((i == 0 && k > 0) || (k >= b[i] && dp[i][k] == dp[i - 1][k - b[i]] + a[i])) {
-                    int i_r = d[i] / n;
-                    int j_r = d[i] % n;
-                    sol[i_r][j_r] = 1;
-                    k -= b[i];
-                }
+        }
+
+        for (int i = m - 1; i >= 0; i--) {
+            if ((i == 0 && k > 0) || (k >= b[i] && dp[i][k] == dp[i - 1][k - b[i]] + a[i])) {
+                int i_r = d[i] / n;
+                int j_r = d[i] % n;
+                sol[i_r][j_r] = 1;
+                k -= b[i];
             }
+        }
     }
 }
