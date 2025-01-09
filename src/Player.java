@@ -88,11 +88,11 @@ public class Player {
     }
 
     public void FindSolution() {
-        int m = 0;
         int[] a = new int[n * n];
         int[] b = new int[n * n];
         int[] d = new int[n * n];
 
+        int m = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (gold[i][j] > 0) {
