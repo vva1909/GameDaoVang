@@ -120,7 +120,7 @@ public class Player {
         }
 
         result = 0;
-        int k = 1;
+        int k = 0;
         for (int j = 0; j <= weight_limit; j++) {
             if (dp[m - 1][j] > result) {
                 result = dp[m - 1][j];
