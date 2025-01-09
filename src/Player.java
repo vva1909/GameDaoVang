@@ -111,8 +111,11 @@ public class Player {
     
             dp[0][b[0]] = a[0];
             for (int i = 1; i < m; i++) {
-                for (int j = b[i]; j <= 20; j++) {
-                    dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - b[i]] + a[i]);
+                for (int j = 0; j <= 20; j++) {
+                    dp[i][j] = dp[i - 1][j];
+                    if (j >= b[i]) {
+                        dp[i][j] = max(dp[i][j], dp[i - 1][j - b[i]] + a[i]);
+                    }
                 }
             }
     
