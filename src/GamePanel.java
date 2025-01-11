@@ -5,9 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GamePanel extends JPanel implements ActionListener {
-    final int B_WIDTH = 800;
-    final int B_HEIGHT = 800;
-    final int DOT_SIZE = 100;
+    final int B_WIDTH = 600;
+    final int B_HEIGHT = 600;
+    final int DOT_SIZE = 75;
     int gold_count = 0, weight_count = 0;
     int DELAY = 150;
     boolean inGame = false, hint_show = false, play_again = false;
@@ -75,7 +75,7 @@ public class GamePanel extends JPanel implements ActionListener {
         for (int i = 0; i < player.n; i++) g.drawImage(bg_1, i * DOT_SIZE, player.n * DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
         g.drawImage(back_ground, 0, 0, B_WIDTH, B_HEIGHT, this);
 
-        Font small = new Font("Helvetica", Font.BOLD, 18);
+        Font small = new Font("Helvetica", Font.BOLD, 13);
         FontMetrics metr = getFontMetrics(small);
 
         g.setColor(Color.black);
@@ -88,9 +88,9 @@ public class GamePanel extends JPanel implements ActionListener {
                     if (player.eaten[i][j] == 0 && player.gold[i][j] > 0) {
                         g.drawImage(gold_image, i * DOT_SIZE + 10, j * DOT_SIZE + 10, DOT_SIZE - 15, DOT_SIZE - 15, this);
                         g.setColor(Color.black);
-                        g.drawString(player.weight[i][j]+" kg", i * DOT_SIZE + 28, j * DOT_SIZE + 40);
-                        g.setColor(Color.RED);
-                        g.drawString(player.gold[i][j]+" $", i * DOT_SIZE + 28, j * DOT_SIZE + 65);
+                        g.drawString(player.weight[i][j]+" kg", i * DOT_SIZE + 28, j * DOT_SIZE + 35);
+                        g.setColor(Color.red);
+                        g.drawString(player.gold[i][j]+" $", i * DOT_SIZE + 28, j * DOT_SIZE + 53);
                         g.setColor(Color.black);
                         if (hint_show && player.sol[i][j] == 1 && cnt == 1) {
                             g.drawImage(hint_image, i * DOT_SIZE, j * DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
@@ -116,16 +116,16 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
         g.setColor(Color.ORANGE);
-        g.setFont(new Font("NewellsHand", Font.BOLD, 25));
+        g.setFont(new Font("NewellsHand", Font.BOLD, 13));
 
         String play = "New Game";
-        g.drawString(play, 230, B_HEIGHT + 30);
+        g.drawString(play, 180, B_HEIGHT + 30);
 
         String play_again = "Play Again";
-        g.drawString(play_again, 450, B_HEIGHT + 30);
+        g.drawString(play_again, 320, B_HEIGHT + 30);
 
         String show_hint = "Hint";
-        g.drawString(show_hint, 700, B_HEIGHT + 30);
+        g.drawString(show_hint, 500, B_HEIGHT + 30);
 
 
     }
