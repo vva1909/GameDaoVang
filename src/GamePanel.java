@@ -72,7 +72,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void doDrawing(Graphics g) {
-        g.drawImage(bg_1, 0, 0, B_WIDTH, B_HEIGHT+50, this);
+        for (int i = 0; i < player.n; i++) g.drawImage(bg_1, i * DOT_SIZE, player.n * DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
         g.drawImage(back_ground, 0, 0, B_WIDTH, B_HEIGHT, this);
 
         Font small = new Font("Helvetica", Font.BOLD, 18);
@@ -102,7 +102,7 @@ public class GamePanel extends JPanel implements ActionListener {
             g.drawImage(finish_image, B_WIDTH - DOT_SIZE, B_HEIGHT - DOT_SIZE, DOT_SIZE, DOT_SIZE, this);
             g.drawImage(player_image, player.x, player.y, DOT_SIZE, DOT_SIZE, this);
 
-            g.setColor(Color.YELLOW);
+            g.setColor(Color.ORANGE);
             String msg = "Gold: " + gold_count + " $ / " + player.result + " $" ;
             g.drawString(msg, 10, B_HEIGHT + 20);
             msg = "Weight: " + weight_count + " / 20 kg";
@@ -110,11 +110,12 @@ public class GamePanel extends JPanel implements ActionListener {
             Toolkit.getDefaultToolkit().sync();
 
         } else {
+            g.setColor(Color.RED);
             g.setFont(new Font("Arial", Font.BOLD, 50));
             g.drawString(game_result, getXTextCenter(game_result, g), 400);
         }
 
-        g.setColor(Color.YELLOW);
+        g.setColor(Color.ORANGE);
         g.setFont(new Font("NewellsHand", Font.BOLD, 25));
 
         String play = "New Game";
