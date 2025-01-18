@@ -119,14 +119,8 @@ public class Player {
             }
         }
 
-        result = 0;
-        int k = 0;
-        for (int j = 0; j <= weight_limit; j++) {
-            if (dp[m - 1][j] > result) {
-                result = dp[m - 1][j];
-                k = j;
-            }
-        }
+        result = dp[m-1][weight_limit];
+        int k = weight_limit;
 
         for (int i = m - 1; i >= 0; i--) {
             if ((i == 0 && k > 0) || (k >= b[i] && dp[i][k] == dp[i - 1][k - b[i]] + a[i])) {
